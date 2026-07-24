@@ -41,7 +41,30 @@ export const storageService = {
   getCustomers(): Customer[] {
     try {
       const data = localStorage.getItem(KEYS.CUSTOMERS);
-      return data ? JSON.parse(data) : initialCustomers;
+      let list: Customer[] = data ? JSON.parse(data) : initialCustomers;
+      
+      let modified = false;
+      const hamzaIndex = list.findIndex((c) => c.fullName.toLowerCase().includes('hamza') && c.fullName.toLowerCase().includes('yakubu'));
+      if (hamzaIndex >= 0) {
+        if (list[hamzaIndex].installment.currentBalance !== 379000 || list[hamzaIndex].installment.remainingBalance !== 379000) {
+          list[hamzaIndex].installment.remainingBalance = 379000;
+          list[hamzaIndex].installment.currentBalance = 379000;
+          list[hamzaIndex].installment.completionPercentage = Math.round(((list[hamzaIndex].installment.kitPrice - 379000) / list[hamzaIndex].installment.kitPrice) * 100);
+          modified = true;
+        }
+      } else {
+        const initialHamza = initialCustomers.find((c) => c.fullName.toLowerCase().includes('hamza'));
+        if (initialHamza) {
+          list = [initialHamza, ...list];
+          modified = true;
+        }
+      }
+
+      if (modified) {
+        localStorage.setItem(KEYS.CUSTOMERS, JSON.stringify(list));
+      }
+
+      return list;
     } catch {
       return initialCustomers;
     }
