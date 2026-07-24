@@ -12,7 +12,7 @@ import {
   CheckCircle2, 
   Clock 
 } from 'lucide-react';
-import { Customer, PaymentRecord, SystemSettings } from '../types';
+import { Customer, PaymentRecord, SystemSettings, ALL_NIGERIAN_STATES } from '../types';
 
 interface ReportsViewProps {
   customers: Customer[];
@@ -39,7 +39,7 @@ export const ReportsView: React.FC<ReportsViewProps> = ({
   const [reportType, setReportType] = useState<ReportType>('MONTHLY');
   const [stateFilter, setStateFilter] = useState<string>('ALL');
 
-  const nigerianStates = Array.from(new Set(customers.map((c) => c.state))).filter(Boolean);
+  const stateOptions = Array.from(new Set([...customers.map((c) => c.state), ...ALL_NIGERIAN_STATES])).filter(Boolean).sort();
 
   // Export to CSV Function
   const exportToCSV = () => {

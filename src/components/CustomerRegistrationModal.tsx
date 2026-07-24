@@ -11,7 +11,7 @@ import {
   Sparkles,
   Camera
 } from 'lucide-react';
-import { Customer, InstallmentDuration } from '../types';
+import { Customer, InstallmentDuration, ALL_NIGERIAN_STATES } from '../types';
 
 interface CustomerRegistrationModalProps {
   isOpen: boolean;
@@ -343,9 +343,9 @@ export const CustomerRegistrationModal: React.FC<CustomerRegistrationModalProps>
                     <select
                       value={state}
                       onChange={(e) => setState(e.target.value)}
-                      className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white font-semibold"
                     >
-                      {['Lagos', 'Abuja (FCT)', 'Rivers', 'Kano', 'Oyo', 'Enugu', 'Delta', 'Kaduna', 'Ogun'].map((s) => (
+                      {ALL_NIGERIAN_STATES.map((s) => (
                         <option key={s} value={s}>{s}</option>
                       ))}
                     </select>

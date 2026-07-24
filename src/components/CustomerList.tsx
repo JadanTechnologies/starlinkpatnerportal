@@ -17,7 +17,7 @@ import {
   Download,
   Calendar
 } from 'lucide-react';
-import { Customer, Role } from '../types';
+import { Customer, Role, ALL_NIGERIAN_STATES } from '../types';
 
 interface CustomerListProps {
   customers: Customer[];
@@ -45,7 +45,7 @@ export const CustomerList: React.FC<CustomerListProps> = ({
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
   const [stateFilter, setStateFilter] = useState<string>('ALL');
 
-  const nigerianStates = Array.from(new Set(customers.map((c) => c.state))).filter(Boolean);
+  const stateOptions = Array.from(new Set([...customers.map((c) => c.state), ...ALL_NIGERIAN_STATES])).filter(Boolean).sort();
 
   const filteredCustomers = customers.filter((customer) => {
     // Search query check
@@ -144,7 +144,7 @@ export const CustomerList: React.FC<CustomerListProps> = ({
             className="px-3 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 focus:outline-none"
           >
             <option value="ALL">All States</option>
-            {nigerianStates.map((state) => (
+            {stateOptions.map((state) => (
               <option key={state} value={state}>
                 {state}
               </option>
