@@ -22,7 +22,8 @@ import {
   ExternalLink,
   Award,
   BadgeCheck,
-  Camera
+  Camera,
+  Upload
 } from 'lucide-react';
 import { Customer, PaymentRecord, SystemSettings, Role } from '../types';
 import { InstallationMapView } from './InstallationMapView';
@@ -68,6 +69,20 @@ export const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
     if (!newNote.trim()) return;
     onAddNote(customer.id, newNote);
     setNewNote('');
+  };
+
+  const handleDetailPhotoFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (typeof reader.result === 'string' && onUpdatePhotoUrl) {
+          onUpdatePhotoUrl(customer.id, reader.result);
+          setEditingPhoto(false);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSavePhotoUrl = () => {
@@ -185,26 +200,45 @@ export const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
 
           {/* Edit Photo Input Popover */}
           {editingPhoto && (
-            <div className="mt-4 p-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center gap-2 text-xs print:hidden">
-              <input
-                type="text"
-                value={photoUrlInput}
-                onChange={(e) => setPhotoUrlInput(e.target.value)}
-                placeholder="Paste avatar / profile photo image URL..."
-                className="flex-1 px-3 py-1.5 rounded-xl bg-slate-900/90 text-white placeholder-slate-400 border border-white/20"
-              />
-              <button
-                onClick={handleSavePhotoUrl}
-                className="px-3 py-1.5 font-bold bg-emerald-500 text-white rounded-xl hover:bg-emerald-600"
-              >
-                Save Photo
-              </button>
-              <button
-                onClick={() => setEditingPhoto(false)}
-                className="px-3 py-1.5 text-slate-300 hover:text-white"
-              >
-                Cancel
-              </button>
+            <div className="mt-4 p-3.5 rounded-2xl bg-slate-900/90 backdrop-blur-md border border-white/20 space-y-2 text-xs print:hidden shadow-xl">
+              <p className="font-bold text-white flex items-center gap-1.5">
+                <Camera className="w-4 h-4 text-blue-400" /> Update Customer Profile Picture
+              </p>
+              <div className="flex flex-wrap items-center gap-2">
+                <label className="px-3 py-1.5 font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-xl cursor-pointer transition flex items-center gap-1.5 shadow-xs">
+                  <Upload className="w-3.5 h-3.5" />
+                  <span>Choose Image File</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleDetailPhotoFileUpload}
+                    className="hidden"
+                  />
+                </label>
+
+                <div className="flex-1 min-w-[200px] flex items-center gap-1.5">
+                  <input
+                    type="text"
+                    value={photoUrlInput}
+                    onChange={(e) => setPhotoUrlInput(e.target.value)}
+                    placeholder="Or paste image URL (https://...)"
+                    className="flex-1 px-3 py-1.5 rounded-xl bg-slate-800 text-white placeholder-slate-400 border border-slate-700"
+                  />
+                  <button
+                    onClick={handleSavePhotoUrl}
+                    className="px-3.5 py-1.5 font-bold bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl transition"
+                  >
+                    Save URL
+                  </button>
+                </div>
+
+                <button
+                  onClick={() => setEditingPhoto(false)}
+                  className="px-3 py-1.5 text-slate-300 hover:text-white"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           )}
         </div>

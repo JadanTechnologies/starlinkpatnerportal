@@ -65,6 +65,19 @@ export const CustomerRegistrationModal: React.FC<CustomerRegistrationModalProps>
   // Photo
   const [photoUrl, setPhotoUrl] = useState('https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80');
 
+  const handlePhotoFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (typeof reader.result === 'string') {
+          setPhotoUrl(reader.result);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   if (!isOpen) return null;
 
   // Auto-calculated values
@@ -207,20 +220,42 @@ export const CustomerRegistrationModal: React.FC<CustomerRegistrationModalProps>
           {/* STEP 1: Personal & Location */}
           {activeStep === 1 && (
             <div className="space-y-4">
-              <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
-                <div className="w-16 h-16 rounded-2xl bg-blue-100 dark:bg-blue-900/60 overflow-hidden shrink-0 border border-blue-200 flex items-center justify-center">
-                  <img src={photoUrl} alt="" className="w-full h-full object-cover" />
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+                <div className="w-16 h-16 rounded-2xl bg-blue-100 dark:bg-blue-900/60 overflow-hidden shrink-0 border-2 border-blue-200 dark:border-blue-700 flex items-center justify-center shadow-xs">
+                  <img src={photoUrl} alt="Customer Avatar" className="w-full h-full object-cover" />
                 </div>
-                <div>
-                  <p className="text-xs font-bold text-slate-900 dark:text-white">Customer Photograph</p>
-                  <p className="text-[11px] text-slate-400">Passport photo for contract identity verification</p>
-                  <button
-                    type="button"
-                    onClick={() => setPhotoUrl(`https://images.unsplash.com/photo-${1500000000000 + Math.floor(Math.random()*100000)}?w=150&auto=format&fit=crop`)}
-                    className="mt-1 flex items-center gap-1 text-[11px] font-bold text-blue-600 hover:underline"
-                  >
-                    <Camera className="w-3 h-3" /> Change Sample Photo
-                  </button>
+                <div className="flex-1 space-y-1.5 w-full">
+                  <p className="text-xs font-bold text-slate-900 dark:text-white">Customer Photograph / Passport Picture</p>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">Upload a custom profile photo from device or provide an image link</p>
+                  
+                  <div className="flex flex-wrap items-center gap-2 pt-1">
+                    <label className="px-3 py-1.5 text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-xl cursor-pointer transition flex items-center gap-1.5 shadow-xs">
+                      <Upload className="w-3.5 h-3.5" />
+                      <span>Upload Profile Photo</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handlePhotoFileUpload}
+                        className="hidden"
+                      />
+                    </label>
+
+                    <button
+                      type="button"
+                      onClick={() => setPhotoUrl(`https://images.unsplash.com/photo-${1500000000000 + Math.floor(Math.random()*100000)}?w=150&auto=format&fit=crop`)}
+                      className="px-2.5 py-1.5 text-[11px] font-bold text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-100 transition flex items-center gap-1"
+                    >
+                      <Camera className="w-3 h-3" /> Random Sample
+                    </button>
+                  </div>
+
+                  <input
+                    type="text"
+                    value={photoUrl.startsWith('data:') ? '[Uploaded Image File]' : photoUrl}
+                    onChange={(e) => setPhotoUrl(e.target.value)}
+                    placeholder="Or paste image URL (https://...)"
+                    className="w-full mt-1 px-3 py-1 text-[11px] rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-mono"
+                  />
                 </div>
               </div>
 
